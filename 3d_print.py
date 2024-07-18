@@ -35,25 +35,48 @@ def deg(a, b):
         return math.degrees(math.acos(a / math.sqrt(a ** 2 + b ** 2)) * b / abs(b))
 
 
-def square_printing(cx, cy, cz, ax, ay, az, a, b):
+def sin(i):
+    return math.sin(math.radians(i))
+
+
+def cos(i):
+    return math.cos(math.radians(i))
+
+
+def equation_solver(k1,b1,k2,b2):
+    pass
+def square_printing1(cx, cy, cz, ax, ay, az, a, b):
+    square_printing2(cx - cax, cy - cay, cz - caz, ax, ay, az, a, b)
+
+
+def square_printing2(cx, cy, cz, ax, ay, az, a, b):
     graphic_vertex = []
     for point in square_vertex:
         graphic_vertex.append((point[0] * ax / 2 + cx, point[1] * ay / 2 + cy, point[2] * az / 2 + cz))
     for point in square_edge:
-        points = []
+        camdis = []
+        pointsA = []
+        pointsB = []
         for i in point:
-            x,y,z = graphic_vertex[i]
-            x, z = d2_set(x,z,fa)
-            f = 400/z
+            x, y, z = graphic_vertex[i]
+            x, z = d2_set(x, z, fa)
+            camdis.append(cos(fa - deg(x - cax, z - caz)) * ((x - cax) ** 2 + (z - caz) ** 2) ** 0.5)
+            pointsA.append((x, y, z))
+        if camdis[0] <= 0:
+
+        for i in pointsA:
+            x, y, z = i
+            f = 400 / z
             x = x * f
             y = y * f
-            points.append((x+400,y+300))
-        pygame.draw.lines(screen, 'white', False, points, width=3)
+            pointsB.append((x + 400, y + 300))
+
+        pygame.draw.lines(screen, 'white', False, pointsB, width=3)
 
 
 def play():
     screen.fill(background_colour)
-    square_printing(0, 0, 20, 10, 10, 10, 0, 0)
+    square_printing1(0, 0, 20, 10, 10, 10, 0, 0)
     pygame.display.flip()
 
 
@@ -78,7 +101,6 @@ if __name__ == '__main__':
         fb = fb % 360
         clock.tick(60)
         play()
-        fa += 1
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:  # 判断用户是否点了"X"关闭按钮,并执行if代码段
@@ -87,13 +109,17 @@ if __name__ == '__main__':
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
-            cax += 0.6
+            cax += 0.6*cos(fa)
+            caz += 0.6*sin(fa)
         if keys[pygame.K_a]:
-            cax -= 0.6
+            cax -= 0.6*cos(fa)
+            caz += 0.6*sin(fa)
         if keys[pygame.K_w]:
-            caz += 0.6
+            cax += 0.6*cos(fa)
+            caz += 0.6*cos(fa)
         if keys[pygame.K_s]:
-            caz -= 0.6
+            cax += 0.6*cos(fa)
+            caz -= 0.6*cos(fa)
         if keys[pygame.K_SPACE]:
             if SPACENOW:
                 pause = not pause
