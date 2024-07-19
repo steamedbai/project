@@ -48,53 +48,33 @@ def equation_solver(k1, b1, k2, b2):
 
 
 def square_printing1(cx, cy, cz, ax, ay, az, a, b):
-    square_printing2(cx - cax, cy - cay, cz - caz, ax, ay, az, a, b)
+    square_printing2(cx + cax, cy + cay, cz + caz, ax, ay, az, a, b)
 
 
 def square_printing2(cx, cy, cz, ax, ay, az, a, b):
     graphic_vertex = []
     for point in square_vertex:
-        graphic_vertex.append((point[0] * ax / 2 + cx, point[1] * ay / 2 + cy, point[2] * az / 2 + cz))
+        x,y,z = point
+        x, z = d2_set(x, z, a)
+        z, y = d2_set(z, y, b)
+        graphic_vertex.append((x * ax / 2 + cx, y * ay / 2 + cy, z * az / 2 + cz))
     for point in square_edge:
-        camdis = []
-        pointsA = []
-        pointsB = []
+        points = []
         for i in point:
             x, y, z = graphic_vertex[i]
             x, z = d2_set(x, z, fa)
-            camdis.append(cos(fa - deg(x - cax, z - caz)) * ((x - cax) ** 2 + (z - caz) ** 2) ** 0.5)
-            pointsA.append((x, y, z))
-        if camdis[0] <= 0:
-            if (pointsA[0][0] - pointsA[1][0]) == 0:
-                m = (pointsA[0][0],sin(fa + 90)*pointsA[0][0]+(caz - cax * sin(fa + 90)))
-            else:
-                m = equation_solver(sin(fa + 90), caz - cax * sin(fa + 90),
-                                            pointsA[0][2] - pointsA[1][2] / (pointsA[0][0] - pointsA[1][0]),
-                                            pointsA[0][2] - pointsA[0][1] * (pointsA[0][2] - pointsA[1][2]) /
-                                            (pointsA[0][0] - pointsA[1][0]))
-            pointsA[0] = (m[0], pointsA[0][1],m[1])
-        elif camdis[1] <= 0:
-            if (pointsA[0][0] - pointsA[1][0]) == 0:
-                m = (pointsA[0][0],sin(fa + 90)*pointsA[0][0]+(caz - cax * sin(fa + 90)))
-            else:
-                m = equation_solver(sin(fa + 90), caz - cax * sin(fa + 90),
-                                            pointsA[0][2] - pointsA[1][2] / (pointsA[0][0] - pointsA[1][0]),
-                                            pointsA[0][2] - pointsA[0][1] * (pointsA[0][2] - pointsA[1][2]) /
-                                            (pointsA[0][0] - pointsA[1][0]))
-            pointsA[1] = (m[0], pointsA[1][1],m[1])
-        for i in pointsA:
-            x, y, z = i
+            z, y = d2_set(z, y, fb)
             f = 400 / z
             x = x * f
             y = y * f
-            pointsB.append((x + 400, y + 300))
+            points.append((x + 400, y + 300))
 
-        pygame.draw.lines(screen, 'white', False, pointsB, width=3)
+        pygame.draw.lines(screen, 'white', False, points, width=1)
 
 
 def play():
     screen.fill(background_colour)
-    square_printing1(0, 0, 20, 10, 10, 10, 0, 0)
+    square_printing1(0, 0, 0, 10, 10, 10, 0, 0)
     pygame.display.flip()
 
 
@@ -127,17 +107,21 @@ if __name__ == '__main__':
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
-            cax += 0.6 * cos(fa)
-            caz -= 0.6 * sin(fa)
-        if keys[pygame.K_a]:
             cax -= 0.6 * cos(fa)
             caz += 0.6 * sin(fa)
+        if keys[pygame.K_a]:
+            cax += 0.6 * cos(fa)
+            caz -= 0.6 * sin(fa)
         if keys[pygame.K_w]:
-            cax += 0.6 * sin(fa)
-            caz += 0.6 * cos(fa)
-        if keys[pygame.K_s]:
             cax -= 0.6 * sin(fa)
             caz -= 0.6 * cos(fa)
+        if keys[pygame.K_s]:
+            cax += 0.6 * sin(fa)
+            caz += 0.6 * cos(fa)
+        if keys[pygame.K_SPACE]:
+            cay += 0.6
+        if keys[pygame.K_LSHIFT]:
+            cay -= 0.6
         if keys[pygame.K_ESCAPE]:
             if ESCNOW:
                 pause = not pause
